@@ -106,12 +106,93 @@ class Mod(Numeric):
 
 # --- LOGIC --- #
 
-class Boolean (Logic):
+class Boolean(Logic):
     def __init__(self, value):
         self.value = value
 
     def eval(self, env):
         return self.value
+    
+class LessThan(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
+        return left < right
+    
+class LessEqual(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
+        return left <= right
+    
+class GreaterThan(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
+        return left > right
+    
+class GreaterEqual(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = self.left.eval(env)
+        right = self.right.eval(env)
+        return left >= right
+    
+class Equal(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
+        return left == right
+    
+class And(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = bool(self.left.eval(env))
+        right = bool(self.right.eval(env))
+        return left & right
+    
+class Or(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+    def eval(self, env):
+        left = bool(self.left.eval(env))
+        right = bool(self.right.eval(env))
+        return left | right
+    
+class NotEqual(Logic):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def eval(self, env):
+        left = self.left.eval(env)
+        right = self.right.eval(env)
+        return left != right
+    
+class Not(Logic):
+    def __init__(self right):
+        self.left = left
+    def eval(self, env):
+        left = bool(self.left.eval(env))
+        right = bool(self.right.eval(env))
+        return not right
 
 # --- Functionality Classes --- #
 
@@ -155,7 +236,6 @@ class Assignment(Void):
         if updated == False:
             text = "Line " + str(self.line) + " - " + "has not been declared"
             raise Exception(text)
-
 
 class Print(Void):
     """
