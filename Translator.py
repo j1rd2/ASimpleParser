@@ -85,7 +85,22 @@ class Program(Void):
         for statement in self.statements:
             statement.eval(env)
 
-# class Assignment(Void):
+class Assignment(Void):
+    """
+    This class assign a value to a variable
+    """
+    def __init__(self, name, expression, line):
+        self.name = name
+        self.expression = expression
+        self.line = line
+    
+    def eval(self, env):
+        value = self.expression.eval(env)
+        updated = env.set(self.name, None, value)
+        if updated == False:
+            text = "Line " + str(self.line) + " - " + "The variable has not been declared"
+            raise Exception(text)
+
 
 # class Print(Void):
 
