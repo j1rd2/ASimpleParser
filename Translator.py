@@ -56,7 +56,14 @@ class Add(Numeric):
         right = float(self.right.eval(env))
         return left + right
 
-# class Program(Void):
+class Program(Void):
+    def __init__(self, statements):
+        self.statements = statements
+    
+    def eval(self, env):
+        for statement in self.statements:
+            statement.eval(env)
+
  
 # class VarDeclaration(Void):
 
