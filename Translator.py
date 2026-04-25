@@ -45,7 +45,7 @@ class Minus(Numeric):
 
     def eval(self, env):
         return -1 * float(self.right.eval(env))
-
+    
 class Add(Numeric):
     def __init__(self, left, right):
         self.left = left
@@ -55,4 +55,13 @@ class Add(Numeric):
         left = float(self.left.eval(env))
         right = float(self.right.eval(env))
         return left + right
-    
+
+# class Program(Void):
+ 
+# class VarDeclaration(Void):
+
+# class Assignment(Void):
+
+# class Print(Void):
+
+# class Boolean(Logic):
