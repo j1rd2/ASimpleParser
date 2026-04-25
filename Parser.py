@@ -127,8 +127,23 @@ class Parser:
 	#<multiplicative-expression> ::= <unary-expression> <extended-multiplicative-expression>
 	def multiplicativeExpression(self):
 		if self.token.tag in self.firstMultiplicativeExpression:
-			self.unaryExpression()
-			self.extendedMultiplicativeExpression()
+			node = self.unaryExpression()
+
+			while self.token.tag in self.firstExtendedMultiplicativeExpression:
+				if self.token.tag == ord('*'):
+					self.check(ord('*'))
+					right = self.unaryExpression()
+					node = Multiply(node, right)
+				elif self.token.tag == ord('/'):
+					self.check(ord('/'))
+					right = self.unaryExpression()
+					node = Divide(node, right)
+
+				elif self.token.tag == Tag.MOD:
+					self.check(Tag.MOD)
+					right = self.unaryExpression()
+					node = Mod(node, right)
+			return node
 		else:
 			self.error("expected an multiplicative expression before " + str(self.token))
 
