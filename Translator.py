@@ -55,8 +55,15 @@ class Add(Numeric):
         left = float(self.left.eval(env))
         right = float(self.right.eval(env))
         return left + right
+    
+# --- LOGIC --- #
 
+class Boolean (Logic):
+    def __init__(self, value):
+        self.value = value
 
+    def eval(self, env):
+        return self.value
 
 # --- Functionality Classes --- #
 
@@ -112,5 +119,3 @@ class Print(Void):
     def eval(self, env):
         value = self.expression.eval(env)
         print(value)
-
-# class Boolean(Logic):
