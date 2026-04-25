@@ -127,7 +127,7 @@ class Parser:
 	#<multiplicative-expression> ::= <unary-expression> <extended-multiplicative-expression>
 	def multiplicativeExpression(self):
 		if self.token.tag in self.firstMultiplicativeExpression:
-			node = self.unaryExpression()
+			node = self.unaryExpression() # node=left because unaryExp parses the first character
 
 			while self.token.tag in self.firstExtendedMultiplicativeExpression:
 				if self.token.tag == ord('*'):
@@ -166,10 +166,22 @@ class Parser:
 	#<additive-expression> ::= <multiplicative-expression> <extended-additive-expression>
 	def additiveExpression(self):
 		if self.token.tag in self.firstAdditiveExpression:
-			self.multiplicativeExpression()
-			self.extendedAdditiveExpression()
+			node = self.multiplicativeExpression()
+
+			while self.token.tag in self.firstExtendedAdditiveExpression:
+				if self.token.tag == ord('+'):
+					self.check(ord('+'))
+					right = self.multiplicativeExpression();
+					node = Add(node, right)
+				
+				elif self.token.tag == ord('-'):
+					self.check(ord('-'))
+					right = self.multiplicativeExpression();
+					node = Substract(node, right)
+				return node
 		else:
 			self.error("expected an additive expression before " + str(self.token))
+
 
 	#<extended-relational-expression> := '<' <additive-expression> <extended-relational-expression>
 	#<extended-relational-expression> ::= '<''=' <additive-expression> <extended-relational-expression>
