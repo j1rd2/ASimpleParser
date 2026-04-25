@@ -178,7 +178,8 @@ class Parser:
 					self.check(ord('-'))
 					right = self.multiplicativeExpression();
 					node = Substract(node, right)
-				return node
+
+			return node
 		else:
 			self.error("expected an additive expression before " + str(self.token))
 
@@ -211,11 +212,30 @@ class Parser:
 	
 	#<relational-expression> ::= <additive-expression> <extended-relational-expression>
 	def relationalExpression(self):
-		if self.token.tag in self.firstRelationalExpression:
-			self.additiveExpression()
-			self.extendedRelationalExpression()
+		if self.token.tag in self.firstAdditiveExpression:
+			node = self.additiveExpression()
+		
+			while self.token.tag in self.firstExtendedRelationalExpression:
+				if self.token.tag == ord('<'):
+					self.check(ord('<'))
+					right = self.additiveExpression()
+					node = LessThan(node,right)
+				elif self.token.tag == Tag.LEQ:
+					self.check(Tag.LEQ)
+					right = self.additiveExpression()
+					node = LessEqual(node,right)
+				elif self.token.tag == ord('>'):
+					self.check(ord('>'))
+					right = self.additiveExpression()
+					node = GreaterThan(node,right)
+				elif self.token.tag == Tag.GEQ:
+					self.check(Tag.GEQ)
+					right = self.additiveExpression()
+					node = GreaterEqual(node,right)
+			return node
 		else:
-			self.error("expected an relational expression before " + str(self.token))
+			self.error("expected relational expression before " + str(self.token))
+
 
 	#<extended-equality-expression> := '=' <relational-expression> <extended-equality-expression>
 	#<extended-equality-expression> := '<''>' <relational-expression> <extended-equality-expression>
@@ -236,8 +256,19 @@ class Parser:
 	#<equality-expression> ::= <relational-expression> <extended-equality-expression>
 	def equalityExpression(self):
 		if self.token.tag in self.firstEqualityExpression:
-			self.relationalExpression()
-			self.extendedEqualityExpression()
+			node = self.relationalExpression()
+
+			while self.token.tag in self.firstExtendedEqualityExpression:
+				if self.token.tag == ord('='):
+					self.check(ord('='))
+					right = self.relationalExpression()
+					node = Equal(node, right)
+		
+				elif self.token.tag == Tag.NEQ:
+					self.check(Tag.NEQ)
+					right = self.relationalExpression()
+					node = NotEqual(node, right)
+			return node 
 		else:
 			self.error("expected an equality expression before " + str(self.token))
 

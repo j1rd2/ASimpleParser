@@ -145,8 +145,8 @@ class GreaterEqual(Logic):
         self.left = left
         self.right = right
     def eval(self, env):
-        left = self.left.eval(env)
-        right = self.right.eval(env)
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
         return left >= right
     
 class Equal(Logic):
@@ -182,8 +182,8 @@ class NotEqual(Logic):
         self.right = right
 
     def eval(self, env):
-        left = self.left.eval(env)
-        right = self.right.eval(env)
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
         return left != right
     
 class Not(Logic):
