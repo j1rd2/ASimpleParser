@@ -73,7 +73,7 @@ class VarDeclaration(Void):
             lInserted = env.insert(name)     
 
             if lInserted == False:
-                text = "Line " + str(self.line) + " - " + name + " has alrady been declared"
+                text = "Line " + str(self.line) + " - " + name + " has already been declared"
                 raise Exception(text)
             
 
@@ -98,10 +98,19 @@ class Assignment(Void):
         value = self.expression.eval(env)
         updated = env.set(self.name, None, value)
         if updated == False:
-            text = "Line " + str(self.line) + " - " + "The variable has not been declared"
+            text = "Line " + str(self.line) + " - " + "has not been declared"
             raise Exception(text)
 
 
-# class Print(Void):
+class Print(Void):
+    """
+    This class prints the value of the evaluated expression
+    """
+    def __init__(self, expression):
+        self.expression = expression
+
+    def eval(self, env):
+        value = self.expression.eval(env)
+        print(value)
 
 # class Boolean(Logic):
