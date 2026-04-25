@@ -61,6 +61,9 @@ class Add(Numeric):
 # --- Functionality Classes --- #
 
 class VarDeclaration(Void):
+    """
+    This clas checks if a variable has already been declared
+    """
     def __init__(self, names, line):
         self.names = names
         self.line = line
