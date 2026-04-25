@@ -56,6 +56,24 @@ class Add(Numeric):
         right = float(self.right.eval(env))
         return left + right
 
+
+
+# --- Functionality Classes --- #
+
+class VarDeclaration(Void):
+    def __init__(self, names, line):
+        self.names = names
+        self.line = line
+
+    def eval(self, env):
+        for name in self.names:
+            lInserted = env.insert(name)     
+
+            if lInserted == False:
+                text = "Line " + str(self.line) + " - " + name + " has alrady been declared"
+                raise Exception(text)
+            
+
 class Program(Void):
     def __init__(self, statements):
         self.statements = statements
@@ -63,9 +81,6 @@ class Program(Void):
     def eval(self, env):
         for statement in self.statements:
             statement.eval(env)
-
- 
-# class VarDeclaration(Void):
 
 # class Assignment(Void):
 
