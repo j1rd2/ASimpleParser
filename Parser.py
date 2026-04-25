@@ -324,11 +324,10 @@ class Parser:
 		else:
 			self.error("expected an conditional expression before " + str(self.token))
 
-
 	#<expression> ::= <conditional-expression>
 	def expression(self):
 		if self.token.tag in self.firstExpression:
-			self.conditionalExpression()
+			return self.conditionalExpression()
 		else:
 			self.error("expected an expression before " + str(self.token))
 
