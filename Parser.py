@@ -286,8 +286,15 @@ class Parser:
 	#<conditional-term> ::= <equality-expression> <extended-conditional-term>
 	def conditionalTerm(self):
 		if self.token.tag in self.firstConditionalTerm:
-			self.equalityExpression()
-			self.extendedConditionalTerm()
+			node = self.equalityExpression()
+
+			while self.token.tag in self.firstExtendedConditionalTerm:
+				if self.token.tag == Tag.AND:
+					self.check(Tag.AND)
+					right = self.equalityExpression()
+					node = And(node, right)
+
+			return node
 		else:
 			self.error("expected an conditional term before " + str(self.token))
 
@@ -305,10 +312,18 @@ class Parser:
 	#<conditional-expression> ::= <conditional-term> <extended-conditional-expression>
 	def conditionalExpression(self):
 		if self.token.tag in self.firstConditionalExpression:
-			self.conditionalTerm()
-			self.extendedConditionalExpression()
+			node = self.conditionalTerm()
+
+			while self.token.tag in self.firstExtendedConditionalExpression:
+				if self.token.tag == Tag.OR:
+					self.check(Tag.OR)
+					right = self.conditionalTerm()
+					node = Or(node, right)
+
+			return node
 		else:
 			self.error("expected an conditional expression before " + str(self.token))
+
 
 	#<expression> ::= <conditional-expression>
 	def expression(self):
