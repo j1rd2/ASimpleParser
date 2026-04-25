@@ -187,10 +187,9 @@ class NotEqual(Logic):
         return left != right
     
 class Not(Logic):
-    def __init__(self right):
-        self.left = left
+    def __init__(self, right):
+        self.right = right
     def eval(self, env):
-        left = bool(self.left.eval(env))
         right = bool(self.right.eval(env))
         return not right
 

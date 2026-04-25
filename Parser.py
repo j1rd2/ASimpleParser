@@ -1,4 +1,5 @@
 from Lexer import *
+from Translator import *
 
 class Parser:
 	lex = None
@@ -64,17 +65,25 @@ class Parser:
 	def primaryExpression(self):
 		if self.token.tag in self.firstPrimaryExpression:
 			if self.token.tag == Tag.ID:
+				name = self.token.value
+				line = self.lex.line
 				self.check(Tag.ID)
+				return Identifier(name, line)
 			elif self.token.tag == Tag.NUMBER:
+				value = self.token.value
 				self.check(Tag.NUMBER)
+				return Number(value)
 			elif self.token.tag == Tag.TRUE:
 				self.check(Tag.TRUE)
+				return Boolean(True)
 			elif self.token.tag == Tag.FALSE:
 				self.check(Tag.FALSE)
+				return Boolean(False)
 			elif self.token.tag == ord('('):
 				self.check(ord('('))
-				self.expression()
+				node = self.expression()
 				self.check(ord(')'))
+				return node
 		else:
 			self.error("expected a primary expression before " + str(self.token)) 
 
@@ -83,12 +92,14 @@ class Parser:
 		if self.token.tag in self.firstUnaryExpression:
 			if self.token.tag == ord('-'):
 				self.check(ord('-'))
-				self.unaryExpression()
+				right = self.unaryExpression()
+				return Minus(right)
 			elif self.token.tag == ord('!'):
 				self.check(ord('!'))
-				self.unaryExpression()
+				right = self.unaryExpression()
+				return Not(right)
 			else:
-				self.primaryExpression()
+				return self.primaryExpression()
 		else: 
 			self.error("expected an unary expression before " + str(self.token))
 
