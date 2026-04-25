@@ -1,6 +1,8 @@
 from SymbolTable import *
 from Type import *
 
+# --- Main classes --- #
+
 class Node:
     def eval(self, env):
         pass
@@ -56,6 +58,16 @@ class Add(Numeric):
         right = float(self.right.eval(env))
         return left + right
     
+class Substract(Numeric):
+    def __init__(self, left, right):
+        self.left = left
+        self.right = right
+
+    def eval(eval, env):
+        left = float(self.left.eval(env))
+        right = float(self.right.eval(env))
+        return left - right
+
 # --- LOGIC --- #
 
 class Boolean (Logic):
