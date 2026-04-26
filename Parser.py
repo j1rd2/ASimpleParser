@@ -69,16 +69,20 @@ class Parser:
 				line = self.lex.line
 				self.check(Tag.ID)
 				return Identifier(name, line)
+			
 			elif self.token.tag == Tag.NUMBER:
 				value = self.token.value
 				self.check(Tag.NUMBER)
 				return Number(value)
+			
 			elif self.token.tag == Tag.TRUE:
 				self.check(Tag.TRUE)
 				return Boolean(True)
+			
 			elif self.token.tag == Tag.FALSE:
 				self.check(Tag.FALSE)
 				return Boolean(False)
+			
 			elif self.token.tag == ord('('):
 				self.check(ord('('))
 				node = self.expression()
@@ -94,10 +98,12 @@ class Parser:
 				self.check(ord('-'))
 				right = self.unaryExpression()
 				return Minus(right)
+			
 			elif self.token.tag == ord('!'):
 				self.check(ord('!'))
 				right = self.unaryExpression()
 				return Not(right)
+			
 			else:
 				return self.primaryExpression()
 		else: 
@@ -113,10 +119,12 @@ class Parser:
 				self.check(ord('*'))
 				self.unaryExpression()
 				self.extendedMultiplicativeExpression()
+				
 			elif self.token.tag == ord('/'):
 				self.check(ord('/'))
 				self.unaryExpression()
 				self.extendedMultiplicativeExpression()
+
 			elif self.token.tag == Tag.MOD:
 				self.check(Tag.MOD)
 				self.unaryExpression()
@@ -134,6 +142,7 @@ class Parser:
 					self.check(ord('*'))
 					right = self.unaryExpression()
 					node = Multiply(node, right)
+
 				elif self.token.tag == ord('/'):
 					self.check(ord('/'))
 					right = self.unaryExpression()
@@ -337,8 +346,9 @@ class Parser:
 			if self.token.tag == Tag.PRINT:
 				self.check(Tag.PRINT)
 				self.check(ord('('))
-				self.expression()
+				expression = self.expression()
 				self.check(ord(')'))
+				return Print(expression)
 		else:
 			self.error("expected a text statement before " + str(self.token))
 
@@ -346,9 +356,12 @@ class Parser:
 	def assigmentStatement(self):
 		if self.token.tag in self.firstAssigmentStatement:
 			if self.token.tag == Tag.ID:
+				name = self.token.value
+				line = self.lex.line
 				self.check(Tag.ID)
 				self.check(Tag.ASSIGN)
-				self.expression()
+				expression = self.expression()
+				return Assignment(name, expression, line)
 		else:
 			self.error("expected a assigment statement before " + str(self.token))
 	
@@ -356,20 +369,22 @@ class Parser:
 	def statement(self):
 		if self.token.tag in self.firstStatement:
 			if self.token.tag in self.firstAssigmentStatement:
-				self.assigmentStatement()
+				return self.assigmentStatement()
 			elif self.token.tag in self.firstTextStatement:
-				self.textStatement()
+				return self.textStatement()
 		else: 
 			self.error("expected a statement before " + str(self.token))
 	
 	#<statement-sequence> ::= <statement> <statement-sequence>
 	#<statement-sequence> ::= ' '
 	def statementSequence(self):
-		if self.token.tag in self.firstStatementSequence:
-			self.statement()
-			self.statementSequence()
-		else:
-			pass
+		statements = []
+
+		while self.token.tag in self.firstStatementSequence:
+			statement = self.statement()
+			statements.append(statement)
+		return statements
+
 	
 	#<identifier-list> ::= ',' <identifier> <identifier-list>
 	#<identifier-list> ::= ' '
