@@ -61,6 +61,8 @@ class Parser:
 		if self.token.tag == Tag.EOF:
 			print("ACCEPTED")
 			return ast
+		else:
+			self.error("unexpected token " + str(self.token))
 	
 	#<primary-expression> ::= <identifier> || <number> || <true>	|| <false> ||  '(' <expression> ')'
 	def primaryExpression(self):
