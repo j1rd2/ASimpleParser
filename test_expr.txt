@@ -1,2 +1,4 @@
+VAR x, y
 x := 5
-PRINT(x)
+y := x + 2
+PRINT(y)

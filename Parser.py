@@ -57,9 +57,10 @@ class Parser:
 	
 	def analize(self):
 		self.token = self.lex.scan()
-		self.program()
+		ast = self.program()
 		if self.token.tag == Tag.EOF:
 			print("ACCEPTED")
+			return ast
 	
 	#<primary-expression> ::= <identifier> || <number> || <true>	|| <false> ||  '(' <expression> ')'
 	def primaryExpression(self):
@@ -389,29 +390,38 @@ class Parser:
 	#<identifier-list> ::= ',' <identifier> <identifier-list>
 	#<identifier-list> ::= ' '
 	def identifierList(self):
-		if self.token.tag in self.firstIdentifierList:
-			if self.token.tag == ord(','):
-				self.check(ord(','))
-				self.check(Tag.ID)
-				self.identifierList()
-		else:
-			pass
-	
+		names = []
+
+		while self.token.tag in self.firstIdentifierList:
+			self.check(ord(','))
+			name = self.token.value
+			self.check(Tag.ID)
+			names.append(name)
+
+		return names
+
 	#<declaration-sequence> ::= VAR <identifier> <identifier-list>
 	def declarationSequence(self):
 		if self.token.tag in self.firstDeclarationSequence:
 			if self.token.tag == Tag.VAR:
+				line = self.lex.line
 				self.check(Tag.VAR)
+
+				first = self.token.value
 				self.check(Tag.ID)
-				self.identifierList()
+
+				rest = self.identifierList()
+				names = [first] + rest
+
+				return VarDeclaration(names, line)
 		else: 
 			self.error("expected a declaration sequence before " + str(self.token))
 
 	#<program> ::= <declaration-sequence> <statement-sequence>
 	def program(self):
 		if self.token.tag in self.firstProgram:
-			self.declarationSequence()
-			self.statementSequence()
+			declaration = self.declarationSequence()
+			statements = self.statementSequence()
+			return Program([declaration]+statements)
 		else: 
 			self.error("expected a program before " + str(self.token))
-		
