@@ -248,7 +248,6 @@ class Parser:
 		else:
 			self.error("expected relational expression before " + str(self.token))
 
-
 	#<extended-equality-expression> := '=' <relational-expression> <extended-equality-expression>
 	#<extended-equality-expression> := '<''>' <relational-expression> <extended-equality-expression>
 	#<extended-equality-expression> ::= ' '
